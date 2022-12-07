@@ -7,6 +7,7 @@ from boto3.dynamodb.conditions import Key
 
 ddb = boto3.resource('dynamodb')
 table = ddb.Table('fitbit-api-store')
+yesterday = (datetime.now(timezone(timedelta(hours=9)))-timedelta(days=1)).strftime('%Y-%m-%d')
 
 # DynamoDB:fitbit-api-store か Lambda:fitbit-api からfitbitのデバイス情報を取得する
 def handler(event, context):
@@ -48,8 +49,13 @@ def handler(event, context):
     # APIリクエスト結果を返す
     print('from fitbit-api')
     return {
-        'statusCode': 200,
-        'body': json.dumps(fitbit_json_body, default=decimal_default_proc)
+         'statusCode': 200,
+         'body': json.dumps(
+             {
+                'date': yesterday,
+                'data': fitbit_json_body
+            }, 
+            default=decimal_default_proc)
     }
 
 # https://qiita.com/ekzemplaro/items/5fa8900212252ab554a3
