@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import aws_cdk as cdk
-from FitbitCDK.api_stack import ApiStack
+from FitbitCDK.fitbit_lambda_stack import FitbitLambdaStack
 
 app = cdk.App()
-ApiStack(app, "FitbitCDK")
+FitbitLambdaStack(app, "FitbitCDK")
 app.synth()
