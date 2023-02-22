@@ -9,7 +9,7 @@ from aws_cdk import (
 from . import config
 
 class FitbitLowpowerNotifier(Construct):
-    
+
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
@@ -30,6 +30,10 @@ class FitbitLowpowerNotifier(Construct):
             handler = 'main.handler',
             layers = [lambda_layer_googleapiclient],
             timeout = Duration.seconds(30),
+            environment = {
+                'GOOGLE_SERVICE_ACCOUNT_SECRET_NAME': config.GOOGLE_SERVICE_ACCOUNT_SECRET_NAME,
+                'GOOGLE_CALENDAR_ID': config.GOOGLE_CALENDAR_ID
+            }
         )
 
         # lambda:fitbit-lowpower-notifierからSecretManagerを呼べるようにする
@@ -38,7 +42,7 @@ class FitbitLowpowerNotifier(Construct):
             grantee=lambda_function,
             resource_arns=[
                 config.LINE_NOTIFIER_SECRET_MANAGER_ARN,
-                config.GOOGLE_SPREAD_SHEET_API_SECRET_MANAGER_ARN 
+                config.GOOGLE_SPREAD_SHEET_API_SECRET_MANAGER_ARN
             ]
         )
 

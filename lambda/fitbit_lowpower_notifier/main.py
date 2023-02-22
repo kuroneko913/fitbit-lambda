@@ -1,5 +1,6 @@
 import json
 import boto3
+import os
 from datetime import datetime,timedelta,timezone
 from line_notify import LINE_Notify
 from google_calendar_api import GoogleCalendarApi
@@ -7,8 +8,8 @@ from google_calendar_api import GoogleCalendarApi
 LOW_LEVEL_THRESHOLD = 10
 LIMIT_OF_CHARGE_EVENT_HOUR = 2
 TIMEZONE_OFFSET_FOR_JST = 9
-SERVICE_ACCOUNT_SECRET_NAME = 'spreadsheet-updater' #SecretManagerのキー名 
-CALENDAR_ID = "myblackcat7112@gmail.com"
+SERVICE_ACCOUNT_SECRET_NAME = os.getenv('GOOGLE_SERVICE_ACCOUNT_SECRET_NAME') #SecretManagerのキー名 
+CALENDAR_ID = os.getenv('GOOGLE_CALENDAR_ID')
 
 def handler(event, context):
     try:
@@ -23,12 +24,12 @@ def handler(event, context):
             calendar.createEvent(CALENDAR_ID,calendarEvent)
     except Exception as e:
         print(e)
-        
+
     return {
         'statusCode': 200,
         'body': json.dumps(battery_level)
     }
-    
+
 def createEventForLowPowerNotification():
     isoformat_time = (datetime.now(timezone(timedelta(hours=TIMEZONE_OFFSET_FOR_JST)))+timedelta(hours=LIMIT_OF_CHARGE_EVENT_HOUR)).isoformat()
     event = {
