@@ -51,10 +51,10 @@ def handler(event, context):
     return {
          'statusCode': 200,
          'body': json.dumps(
-             {
+             [{
                 'date': yesterday,
                 'data': fitbit_json_body
-            }, 
+            }], 
             default=decimal_default_proc)
     }
 
